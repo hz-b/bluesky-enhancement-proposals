@@ -1,6 +1,5 @@
 # Integration of callback-based solvers
 
-@Author: Pierre Schnizer
 
 ## Abstract
 
@@ -208,7 +207,7 @@ it should simplify the integration of
 
 ### Simplified implementation
 
-The implementation would then be based on a bridge. It bridges from one thread to the other.
+The implementation would then be based on a `bridge`. It "bridges" from one thread to the other.
 (Another way to see it would be ADA like rendezvous.
 Please correct me, which design pattern would be the correct one).
 
@@ -265,33 +264,10 @@ These challenges are:
   handled: e.g. reraising the exception
 * ensuring that the traceback stack is reported, logged in a consistent fashion
 
-## Implementation considerations
 
-* Single process versus multiprocessing
-* communication layer
-* latency
-* Timeout in executed plan stubs
-* yielding checkpoints during calculation
-* propagating stop calls to objects if required
-* Keeping thread alive until it returns so that missing traceback messages can be resolved?
+## Conclusion
 
-
-## Other implementation options
-
-* Use bluesky server using zmq
-    * subscribe to messages
-    * insert new message in the queue as required
-
-## Miscellaneous
-
-
-
-### Questions to address
-
-1. Range check:
-
-    1. do not target support in first versions.
-    2. At a later stage, encapsulate
-      standard solvers and assume that these solvers could then be augmented with
-      metadata (signals) that would reflect user's assumptions were the solution
-      should be found. (Alternative: use constrained solvers)
+Callback based solvers are commonly available. These solvers can be useful to
+bluesky users. It is not straightforward to use these solvers within bluesky
+plan stubs or other methods. Thus it is proposed to implement a module which
+facilitates the integration of such solvers within a separate module.
