@@ -169,7 +169,7 @@ it should simplify the integration of
 
 
 1. User supplied callback
-    ..:: **python code**
+    ```python
 
         def step_plan_stub(x):
             '''Example of a simple step plan being wrapped by
@@ -182,13 +182,14 @@ it should simplify the integration of
             r = yield from bps.trgger_and_read(list(det) + list(motors))
             # extract result
             return res
+    ```
 
     Thus, the user writes a plan stub that serves as callback to the solver, but behaves like
     any other plan stub, as it is yielding messages to 'do something'
 
 
 2. Plans stub to wrap the solver
-    ..:: *python code
+    ```python
         def wrap_scale_solver(solver, step_plan, *, log):
             '''
             Args:
@@ -200,6 +201,7 @@ it should simplify the integration of
                 log:        the logger to be used. This logger must be supplied (not
 		            compatible with standard bluesky plans		     .
             '''
+    ```
 
     This plan stub hides all the details that are required to set up the different threads,
     handle exceptions, timeouts and so on.
@@ -210,7 +212,7 @@ The implementation would then be based on a bridge. It bridges from one thread t
 (Another way to see it would be ADA like rendezvous.
 Please correct me, which design pattern would be the correct one).
 
-..:: *python code
+```python
 
 
     def cb_wrapper(bridge, solver, step_plan):
@@ -247,7 +249,7 @@ Please correct me, which design pattern would be the correct one).
                 log.info(f'run_environment: Finishing processing  {env}')
                 # And there is no timeout here
                 thread.join()
-
+```
 
 ## Argument for yet another module
 
