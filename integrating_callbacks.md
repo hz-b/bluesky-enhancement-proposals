@@ -35,7 +35,9 @@ be executed for obtaining a proper data set. As examples one can consider:
 Task (2) is available as adaptive plan ins bluesky. This solver was implemented
 as a dedicated plan. Task (1) is typically solved by "scalar root solvers".
 
-Many solvers exist today (e.g. see the solvers in `scipy.optimize`) that expect
+Many solvers exist today (e.g. see the solvers in 
+[`scipy.optimize`](https://docs.scipy.org/doc/scipy/reference/tutorial/optimize.html)) 
+that expect
 a call back function, whose result it tries to optimise. Bluesky plans, however
 work by emitting (yielding) messages. Thus, an integration of such solvers in
 Bluesky plan stubs is not straight forward. Therefore, it is proposed to develop
@@ -46,7 +48,9 @@ Such a module should address the following issues:
 1. provide a call back like interface to the solver.
 2. provide a generator like interface, so that it can be used by the bluesky run
    engine.
-3. Allow controlling, how data are taken during the
+3. Allow controlling, how data are taken when the solver tries to run its task.
+   Or in other words: the user shall be able to implement the callback as a 
+   plan stub.
 
 ### Advantages of this approach
 
@@ -72,8 +76,8 @@ In the author's experience the problem describe above can be mitigated by:
 * using solvers that have been designed to handle measurement errors from the
   beginning.
 
-#### Wrapping solver as IOC
 
+#### Wrapping solver as IOC
 
 At least the following modules are available for implementing a python based
 IOC within an EPICS environment:
@@ -144,7 +148,6 @@ error messages and reporting make code development more straightforward.
      "strange responses" could help developers solving device specific issues
      early.
 
-
 3. check that solver does not timeout before the call times out or deal with
    pending device evaluations when a timeout occurs
    * Reason: once more targeted to simplify user experience
@@ -165,8 +168,8 @@ it should simplify the integration of
 2. providing an OpenAI compatible environment. Such solvers can be used by
    typical reinforcement learning type solver
 
-### Proposed API
 
+### Proposed API
 
 1. User supplied callback
     ```python
@@ -176,7 +179,7 @@ it should simplify the integration of
 
             This plan is expected to:
 	        * yield the messages required for executing the measurement
-		* return the value matching to the solver’s expectation
+		* return the value matching to the solverâ€™s expectation
             '''
             yield from bps.mv(mot, x)
             r = yield from bps.trgger_and_read(list(det) + list(motors))
@@ -206,6 +209,7 @@ it should simplify the integration of
     This plan stub hides all the details that are required to set up the different threads,
     handle exceptions, timeouts and so on.
 
+
 ### Simplified implementation
 
 The implementation would then be based on a bridge. It bridges from one thread to the other.
@@ -213,7 +217,6 @@ The implementation would then be based on a bridge. It bridges from one thread t
 Please correct me, which design pattern would be the correct one).
 
 ```python
-
 
     def cb_wrapper(bridge, solver, step_plan):
         '''Hides bridge handling details from the user
@@ -226,7 +229,6 @@ Please correct me, which design pattern would be the correct one).
             cb(func)
         finally:
             brigde.StopDelegation()
-
 
         assert(log is not None)
 
